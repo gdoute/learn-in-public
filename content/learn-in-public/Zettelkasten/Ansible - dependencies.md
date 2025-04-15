@@ -5,3 +5,5 @@ Typically on a debian environment, the following command should be enough to get
 ```bash
 apt install python-dev python-pip
 ```
+
+[[Ansible - installation & upgrade]]
