@@ -17,7 +17,7 @@ I'm trying to make this simple logic is as follow for now it looks as the follow
 | Zettelkasten | I'm using a Zettelkasten still method. Basically my notes are atomic and once I believe a note is *good enough*, I dump it from *Inbox* to *Zettelkasten*                                            |
 | template     | a place where I hold my template notes for Obsidian                                                                                                                                                  |
 
-I'm thinking of adding
+I'm thinking of adding other directories for books reviews for example, but we'll see…
 
 ## What are you using ?
 
