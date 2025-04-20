@@ -1,0 +1,39 @@
+name: Summarize and Post to BlueSky
+
+on:
+  push:
+    paths:
+      - 'posts/**'
+      - '.github/workflows/summarize.yml'  # allow retriggering when workflow is edited
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install openai atproto
+
+      - name: Generate summary and post to BlueSky
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+        run: python summarize.py
+
+      - name: Push marker commit (if any)
+        if: success()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase  # make sure we're up to date before pushing
+          git push
+
