@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import datetime
+import truststore
 from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
@@ -57,6 +58,7 @@ Article:
 
 # Call OpenAI API
 try:
+    truststore.inject_into_ssl()
     response = client.chat.completions.create(
         model="gpt-4o-mini",
         messages=[
