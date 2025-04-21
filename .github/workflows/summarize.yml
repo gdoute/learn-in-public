@@ -17,28 +17,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: Debug OpenAI connectivity
-        run: |
-          echo "Resolving api.openai.com…"
-          nslookup api.openai.com || true
 
-          echo "Pinging api.openai.com…"
-          ping -c 2 api.openai.com || true
+      - name: Install dependencies
+        run: pip install openai atproto requests
 
-          echo "Curling models endpoint…"
-          curl -v https://api.openai.com/v1/models \
-            -H "Authorization: Bearer $OPENAI_API_KEY" || true
+      - name: Generate summary and post to BlueSky
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
+          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
+        run: python summarize.py
 
-
-#      - name: Install dependencies
-#        run: pip install openai atproto requests
-#
-#      - name: Generate summary and post to BlueSky
-#        env:
-#          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-#          BLUESKY_HANDLE: ${{ secrets.BLUESKY_HANDLE }}
-#          BLUESKY_APP_PASSWORD: ${{ secrets.BLUESKY_APP_PASSWORD }}
-#        run: python summarize.py
-#
