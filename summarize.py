@@ -1,7 +1,6 @@
 import os
 import sys
 import datetime
-import subprocess
 import openai
 from atproto import Client
 
@@ -14,21 +13,6 @@ bsky_app_password = os.getenv("BLUESKY_APP_PASSWORD")
 yesterday = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
 post_filename = f"content/Journal/{yesterday}.md"
 
-# Check git log for existing marker commit
-def summary_already_committed():
-    try:
-        result = subprocess.run(
-            ['git', 'log', '--grep', f'summary for {yesterday}', '--pretty=oneline'],
-            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-        )
-        return result.returncode == 0 and bool(result.stdout.strip())
-    except Exception as e:
-        print(f"⚠️ Failed to check git log: {e}")
-        return False
-
-if summary_already_committed():
-    print(f"✅ Summary already committed for {yesterday}, skipping.")
-    sys.exit(0)
 
 # Check if post file exists
 if not os.path.exists(post_filename):
@@ -74,12 +58,3 @@ except Exception as e:
     print(f"❌ BlueSky post failed: {e}")
     sys.exit(1)
 
-# Create marker commit
-try:
-    subprocess.run(['git', 'config', 'user.name', 'github-actions[bot]'], check=True)
-    subprocess.run(['git', 'config', 'user.email', 'github-actions[bot]@users.noreply.github.com'], check=True)
-    subprocess.run(['git', 'commit', '--allow-empty', '-m', f'chore: summary for {yesterday}'], check=True)
-    print(f"✅ Marker commit created for {yesterday}")
-except Exception as e:
-    print(f"⚠️ Marker commit failed: {e}")
-    sys.exit(1)
