@@ -10,6 +10,7 @@ import requests
 # Load API credentials from environment
 bsky_handle = os.getenv("BLUESKY_HANDLE")
 bsky_app_password = os.getenv("BLUESKY_APP_PASSWORD")
+yourls_signature = os.getenv("YOURLS_SIGNATURE")
 
 dry_run = os.getenv("DRY_RUN", "false").lower() == "true"
 
@@ -18,9 +19,10 @@ yesterday = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
 post_filename = f"content/Journal/{yesterday}.md"
 article_url = f"https://gdoute.github.io/learn-in-public/content/Journal/{yesterday}.md"
 
-def shorten_url(url):
+
+def shorten_url_yourls(url):
     try:
-        res = requests.get(f"https://tinyurl.com/api-create.php?url={url}")
+        res = requests.get(f"https://cosmogol.net/yourls/yourls-api.php?url={url}&format=simple&action=shorturl&signature={yourls_signature}")
         if res.status_code == 200:
             return res.text
         else:
@@ -29,7 +31,6 @@ def shorten_url(url):
     except Exception as e:
         print(f"⚠️ Failed to shorten URL: {e}")
         return url
-
 
 # Check if post file exists
 if not os.path.exists(post_filename):
@@ -40,11 +41,11 @@ if not os.path.exists(post_filename):
 with open(post_filename, 'r', encoding='utf-8') as f:
     article_content = f.read()
 
-short_url = shorten_url(article_url)
+short_url = shorten_url_yourls(article_url)
 # Compose prompt for OpenAI
 prompt = f"""
-Summarize the following article in a way that fits into a BlueSky post (max 300 characters), preserving key ideas and using engaging language. Add a hashtag #learnInPublic to the end of the summary and at least two other hashtags that references key points of the summary.
-add a link to the article in the summary at the address {short_url}
+Summarize the following article in a way that fits into a BlueSky post (max 200 characters), preserving key ideas and using engaging language. Add a hashtag #LearnInPublic to the end of the summary and at most two other hashtags that references key points of the summary.
+add a link to the article in the summary at the address of the daily note that is : {short_url}
 
 At the beginning of the summary, mention there is a new update in the learn-in-public site. When mentioning the author use the first person, for example "I wrote this article".
 
@@ -55,7 +56,7 @@ Article:
 # Call OpenAI API
 try:
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are a professional content summarizer."},
             {"role": "user", "content": prompt}
