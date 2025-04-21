@@ -42,13 +42,14 @@ if not os.path.exists(post_filename):
 with open(post_filename, 'r', encoding='utf-8') as f:
     article_content = f.read()
 
-short_url = shorten_url_yourls(article_url)
+#short_url = shorten_url_yourls(article_url)
 # Compose prompt for OpenAI
 prompt = f"""
-Summarize the following article in a way that fits into a BlueSky post (max 200 characters), preserving key ideas and using engaging language. Add a hashtag #LearnInPublic to the end of the summary and at most two other hashtags that references key points of the summary.
-add a link to the article in the summary at the address of the daily note that is : {short_url}
+Summarize the following article in a way that fits into a BlueSky post, preserving key ideas and using engaging language. Add a hashtag #LearnInPublic to the end of the summary and at most two other hashtags that references key points of the summary if the character limits allows to.
+add a link to the article in the summary at the address of the daily note that is : {article_url}
 
 At the beginning of the summary, mention there is a new update in the learn-in-public site. When mentioning the author use the first person, for example "I wrote this article".
+make sure that the summary text with mentions, hashtags, links and text  is less than 300 characters ; remember that all links should be strictly counted as 22 characters.
 
 Article:
 {article_content}
