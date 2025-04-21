@@ -1,10 +1,9 @@
-name: Summarize and Post to BlueSky
+name: Daily Summary and BlueSky Post
 
 on:
-  push:
-    paths:
-      - 'posts/**'
-      - '.github/workflows/summarize.yml'  # allow retriggering when workflow is edited
+  schedule:
+    - cron: '0 16 * * *'  # ⏰ Triggers at 18:00 CET/CEST (UTC+2)
+  workflow_dispatch:       # Allow manual triggering via GitHub UI
 
 jobs:
   summarize:
@@ -34,6 +33,5 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git pull --rebase  # make sure we're up to date before pushing
+          git pull --rebase
           git push
-
