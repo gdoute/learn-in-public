@@ -19,7 +19,7 @@ jobs:
           python-version: '3.x'
 
       - name: Install dependencies
-        run: pip install openai atproto
+        run: pip install openai atproto requests
 
       - name: Generate summary and post to BlueSky
         env:

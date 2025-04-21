@@ -1,10 +1,11 @@
 import os
 import sys
+import re
 import datetime
 from openai import OpenAI
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
-from atproto import Client
+from atproto import Client, client_utils
 import requests
 
 # Load API credentials from environment
@@ -17,7 +18,7 @@ dry_run = os.getenv("DRY_RUN", "false").lower() == "true"
 # Use YESTERDAY'S date for summary target
 yesterday = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
 post_filename = f"content/Journal/{yesterday}.md"
-article_url = f"https://gdoute.github.io/learn-in-public/content/Journal/{yesterday}.md"
+article_url = f"https://gdoute.github.io/learn-in-public/Journal/{yesterday}"
 
 
 def shorten_url_yourls(url):
@@ -69,13 +70,33 @@ except Exception as e:
     print(f"❌ OpenAI API call failed: {e}")
     sys.exit(1)
 
-# Post to BlueSky
+# ─── Build rich text with hashtag facets ──
+# Split the summary on either URLs or hashtags
+pattern = r"(https?://\S+|#\w+)"
+segments = re.split(pattern, summary)
+
+tb = client_utils.TextBuilder()
+for seg in segments:
+    if not seg:
+        continue
+    if re.match(r"^https?://", seg):
+        # Add a link facet
+        tb.link(seg, seg)
+    elif seg.startswith("#") and re.match(r"^#\w+$", seg):
+        # Add a hashtag facet (strip leading '#')
+        tb.tag(seg, seg.lstrip("#"))
+    else:
+        tb.text(seg)
+
+
+# ─── Post to BlueSky ───
 if not dry_run:
     try:
         client = Client()
         client.login(bsky_handle, bsky_app_password)
-        client.send_post(summary)
-        print("✅ Posted to BlueSky.")
+        # sending the TextBuilder itself ensures facets are sent
+        post = client.send_post(tb)
+        print("✅ Posted to BlueSky:", post.uri)
     except Exception as e:
         print(f"❌ BlueSky post failed: {e}")
         sys.exit(1)
