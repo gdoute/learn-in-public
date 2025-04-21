@@ -1,17 +1,34 @@
 import os
 import sys
 import datetime
-import openai
+from openai import OpenAI
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+
 from atproto import Client
+import requests
 
 # Load API credentials from environment
-openai.api_key = os.getenv("OPENAI_API_KEY")
 bsky_handle = os.getenv("BLUESKY_HANDLE")
 bsky_app_password = os.getenv("BLUESKY_APP_PASSWORD")
+
+dry_run = os.getenv("DRY_RUN", "false").lower() == "true"
 
 # Use YESTERDAY'S date for summary target
 yesterday = (datetime.date.today() - datetime.timedelta(days=1)).isoformat()
 post_filename = f"content/Journal/{yesterday}.md"
+article_url = f"https://gdoute.github.io/learn-in-public/content/Journal/{yesterday}.md"
+
+def shorten_url(url):
+    try:
+        res = requests.get(f"https://tinyurl.com/api-create.php?url={url}")
+        if res.status_code == 200:
+            return res.text
+        else:
+            print(f"⚠️ Failed to shorten URL: {res.text}")
+            return url
+    except Exception as e:
+        print(f"⚠️ Failed to shorten URL: {e}")
+        return url
 
 
 # Check if post file exists
@@ -23,9 +40,13 @@ if not os.path.exists(post_filename):
 with open(post_filename, 'r', encoding='utf-8') as f:
     article_content = f.read()
 
+short_url = shorten_url(article_url)
 # Compose prompt for OpenAI
 prompt = f"""
-Summarize the following article in a way that fits into a BlueSky post (max 300 characters), preserving key ideas and using engaging language.
+Summarize the following article in a way that fits into a BlueSky post (max 300 characters), preserving key ideas and using engaging language. Add a hashtag #learnInPublic to the end of the summary and at least two other hashtags that references key points of the summary.
+add a link to the article in the summary at the address {short_url}
+
+At the beginning of the summary, mention there is a new update in the learn-in-public site. When mentioning the author use the first person, for example "I wrote this article".
 
 Article:
 {article_content}
@@ -33,28 +54,30 @@ Article:
 
 # Call OpenAI API
 try:
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4",
         messages=[
             {"role": "system", "content": "You are a professional content summarizer."},
             {"role": "user", "content": prompt}
         ],
         temperature=0.7,
-        max_tokens=300
-    )
-    summary = response.choices[0].message['content'].strip()
+        max_tokens=300)
+    summary = response.choices[0].message.content.strip()
     print("📝 Summary:\n" + summary)
 except Exception as e:
     print(f"❌ OpenAI API call failed: {e}")
     sys.exit(1)
 
 # Post to BlueSky
-try:
-    client = Client()
-    client.login(bsky_handle, bsky_app_password)
-    client.send_post(summary)
-    print("✅ Posted to BlueSky.")
-except Exception as e:
-    print(f"❌ BlueSky post failed: {e}")
-    sys.exit(1)
+if not dry_run:
+    try:
+        client = Client()
+        client.login(bsky_handle, bsky_app_password)
+        client.send_post(summary)
+        print("✅ Posted to BlueSky.")
+    except Exception as e:
+        print(f"❌ BlueSky post failed: {e}")
+        sys.exit(1)
+else:
+    print("🧪 DRY RUN: Skipping BlueSky post.")
 
