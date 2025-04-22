@@ -49,7 +49,7 @@ Summarize the following article in a way that fits into a BlueSky post, preservi
 add a link to the article in the summary at the address of the daily note that is : {article_url}
 
 At the beginning of the summary, mention there is a new update in the learn-in-public site. When mentioning the author use the first person, for example "I wrote this article".
-make sure that the summary text with mentions, hashtags, links and text  is less than 250 characters ; remember that all links should be strictly counted as 22 characters.
+make sure that the summary text with mentions, hashtags, links and text  is less than 200 characters ; remember that all links should be strictly counted as 22 characters.
 
 Article:
 {article_content}
