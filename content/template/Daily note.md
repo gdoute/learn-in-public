@@ -1,6 +1,5 @@
 ---
 title: "{{date:YYYY-MM-DD}}"
-draft: 
 tags:
   - daily_note
 ---
@@ -9,7 +8,7 @@ tags:
 ## Created
 
 -  [[A note]]
-- [[another note]]
+
 
 ## Update
 

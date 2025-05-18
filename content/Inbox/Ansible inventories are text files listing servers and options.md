@@ -24,4 +24,3 @@ This file can be in any directories as long as it's being called by ansible from
 
 ## Related
 - [[inventory files lists many servers and there is no limit]]
-- [[Related Note 2]]
