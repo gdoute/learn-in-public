@@ -1,3 +1,9 @@
+---
+tags:
+  - portainer
+---
+
+
 When deploying a service through docker compose and using portainer, you basically need to do the following : 
 
 * stop the stack, 

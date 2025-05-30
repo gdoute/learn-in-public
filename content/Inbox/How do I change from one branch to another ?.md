@@ -1,3 +1,9 @@
+---
+tags:
+  - git
+---
+
+
 Going from one branch to another consists of using the `checkout` command ; alternatively you can use the `switch` command.
 
 Considering this timeline and that you are on *main* branch :

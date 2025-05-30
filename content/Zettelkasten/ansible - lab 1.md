@@ -1,3 +1,9 @@
+---
+tags:
+  - ansible
+---
+
+
 This lab had the following requirements :
 
 

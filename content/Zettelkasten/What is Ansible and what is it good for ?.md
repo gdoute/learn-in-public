@@ -1,3 +1,9 @@
+---
+tags:
+  - ansible
+---
+
+
 Ansible is configuration tool that helps maintaining the configuration of your host in one place, but it's more than that.
 
 It's also a way to create scripts that help you manage servers that can run across multiple servers and multiple OS.

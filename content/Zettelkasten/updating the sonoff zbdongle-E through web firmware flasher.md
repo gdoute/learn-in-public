@@ -1,3 +1,10 @@
+---
+tags:
+  - zigbee
+  - homeassistant
+---
+
+
 For this to work you must use Chrome (or edge). It's not possible to do so with firefox.
 
 go to the following website : 

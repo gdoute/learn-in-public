@@ -1,3 +1,9 @@
+---
+tags:
+  - encryption
+---
+
+
 If you want to use FIDO2 from your yubikey to decrypt a disk or partition, you need to do the following steps :
 First you need to find out what is the encrypted partition :
 

@@ -1,3 +1,10 @@
+---
+tags:
+  - vagrant
+  - ansible
+---
+
+
 Vagrant allows to create a config file dedicated to setup a whole cluster of VMs in a way we want it to work
 
 ### prerequisite

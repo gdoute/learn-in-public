@@ -1,3 +1,9 @@
+---
+tags:
+  - git
+---
+
+
 `checkout` is the historic command and `switch` was introduced later.
 With time, `checkout` introduced many features that ended up confusing people. As a result `switch` was introduced to improve user experience.
 

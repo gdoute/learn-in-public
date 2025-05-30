@@ -1,3 +1,9 @@
+---
+tags:
+  - portainer
+---
+
+
 Because there is no update mechanism included in the community edition of portainer, it has to be done manually.
 
 The steps required are

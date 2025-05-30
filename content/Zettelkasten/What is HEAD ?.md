@@ -1,3 +1,9 @@
+---
+tags:
+  - git
+---
+
+
 HEAD is basically where *you* are located in the commit timeline in git. Or more precisely, it's the pointer to the current branch.
 
 Any time that you use the `checkout` (or `switch`) command to go from one branch to another, you're basically changing the location of HEAD.

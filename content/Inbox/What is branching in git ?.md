@@ -1,3 +1,9 @@
+---
+tags:
+  - git
+---
+
+
 Branches must be understood as simple bookmarks in  the timeline of commit. Contrary to other tools like Subversion, where a branch is a fork of the main timeline, here they are just pointers.
 
 So considering this timeline of commit in a *main* branch

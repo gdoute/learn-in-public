@@ -1,3 +1,9 @@
+---
+tags:
+  - desktop_environment
+---
+
+
 There seems to be security concerns when first trying to execute `flameshot gui` using hotkeys in GNOME
 
 [this gist](https://gist.github.com/linuxkathirvel/5e8bb416f487b4b47a97daa42288502f) gives the answer.
