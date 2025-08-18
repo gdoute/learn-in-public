@@ -15,18 +15,14 @@ in the `~/.config/systemd/user` directory, add your service. Here is an example 
 ```ini
 [Unit]
 Description=Run Quartz Sync on session exit
-DefaultDependencies=no
 After=graphical-session.target
-PartOf=graphical-session.target
 
 [Service]
 Type=oneshot
-RemainAfterExit=true
-ExecStart=/bin/true
-ExecStop=/bin/bash -lc 'cd /home/gdo/path/to/quartz && npx quartz sync'
+ExecStart=/bin/bash -lc 'cd /home/gdo/path/to/quartz && npx quartz sync'
 
 [Install]
-WantedBy=graphical-session.target
+WantedBy=exit.target
 ```
 
 next we reload the systemd daemon for the user and enable the service :
@@ -37,6 +33,7 @@ systemctl --user daemon-reload
 systemctl --user enable quartz-logout.service
 ```
 
+After the enable command, this should create a directory in ~/.config/systemd/user called *exit.target.wants* and should contain an symlink to the quartz-logout.service file 
 ### testing
 
 We can test by restarting the service and then execute the stop instruction for systemd and check in the logs with journalctl :
@@ -46,3 +43,4 @@ systemctl --user restart quartz-logout.service
 systemctl --user stop quartz-logout.service
 journactl --user -u quartz-logout.service
 ```
+

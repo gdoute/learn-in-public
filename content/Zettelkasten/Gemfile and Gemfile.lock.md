@@ -62,6 +62,6 @@ GEM
       useragent (~> 0.16)
 ```
 
-Those files are used by *bundler*
+Those files are used by *bundler* when deploying later in production
 
 [[Bundler is the ruby gem manager]]
